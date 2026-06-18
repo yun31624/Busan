@@ -724,11 +724,29 @@
 
     </main>
 
-    <!-- 底部導覽列 -->
+   <!-- 底部導覽列 (拆分檔案版本) -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 h-16 flex max-w-md mx-auto shadow-lg z-50 text-[11px] text-slate-400">
-        <button onclick="navTo('schedule')" id="nav-schedule" class="flex-1 flex flex-col justify-center items-center font-bold active-nav"><i class="fa-solid fa-calendar-days text-base mb-0.5"></i>行程</button>
-        <button onclick="navTo('guide')" id="nav-guide" class="flex-1 flex flex-col justify-center items-center font-bold"><i class="fa-solid fa-suitcase text-base mb-0.5"></i>準備</button>
-        <button onclick="navTo('ledger')" id="nav-ledger" class="flex-1 flex flex-col justify-center items-center font-bold"><i class="fa-solid fa-wallet text-base mb-0.5"></i>記帳</button>
+        
+        <!-- 連結回首頁 (行程導航) -->
+        <a href="index.html" class="flex-1 flex flex-col justify-center items-center font-bold hover:text-[#7a685c]">
+            <i class="fa-solid fa-calendar-days text-base mb-0.5"></i>行程導航
+        </a>
+        
+        <!-- 連結到行前準備 -->
+        <a href="busan_complete_travel_guide.html" class="flex-1 flex flex-col justify-center items-center font-bold hover:text-[#7a685c]">
+            <i class="fa-solid fa-suitcase text-base mb-0.5"></i>行前準備
+        </a>
+        
+        <!-- 連結到在地文化 -->
+        <a href="busan_intro_and_attractions.html" class="flex-1 flex flex-col justify-center items-center font-bold hover:text-[#7a685c]">
+            <i class="fa-solid fa-gopuram text-base mb-0.5"></i>在地文化
+        </a>
+        
+        <!-- 記帳本 (如果您還沒獨立出來，可以先保留按鈕) -->
+        <button class="flex-1 flex flex-col justify-center items-center font-bold hover:text-[#7a685c]">
+            <i class="fa-solid fa-wallet text-base mb-0.5"></i>旅遊記帳
+        </button>
+        
     </nav>
 
     <!-- 🚕 司機大字卡 Modal -->
