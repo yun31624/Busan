@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans, 'Noto Sans TC', sans-serif); background: transparent; }
+
+  /* ── Tab nav ── */
+  .tabs { display: flex; gap: 6px; padding: 1rem 0 .75rem; flex-wrap: wrap; }
+  .tab-btn {
+    font-size: 13px; font-weight: 500; padding: 6px 16px;
+    border: 0.5px solid var(--color-border-secondary, #ccc);
+    border-radius: 20px; background: var(--color-background-primary);
+    color: var(--color-text-secondary); cursor: pointer; transition: all .15s;
+  }
+  .tab-btn.active {
+    background: #1D9E75; color: #fff; border-color: #1D9E75;
+  }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* ── Section cards ── */
+  .card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 12px; overflow: hidden; margin-bottom: 1rem;
+  }
+  .card-header {
+    padding: .75rem 1.25rem;
+    border-bottom: 0.5px solid var(--color-border-tertiary);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .card-body { padding: .85rem 1.25rem; }
+
+  /* ── Hero banner ── */
+  .hero {
+    border-radius: 12px; overflow: hidden; margin-bottom: 1rem;
+    background: linear-gradient(135deg, #E1F5EE 0%, #E6F1FB 100%);
+    padding: 1.5rem 1.5rem 1rem; position: relative;
+  }
+  .hero-title { font-size: 24px; font-weight: 500; color: #085041; margin-bottom: .4rem; }
+  .hero-sub { font-size: 13px; color: #0F6E56; line-height: 1.6; }
+  .hero-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: .75rem; }
+  .chip {
+    font-size: 11px; padding: 3px 10px; border-radius: 20px;
+    background: rgba(29,158,117,.12); color: #085041; font-weight: 500;
+  }
+
+  /* ── Area map grid ── */
+  .area-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .area-card {
+    border-radius: 10px; padding: .6rem .85rem;
+    border: 0.5px solid var(--color-border-tertiary);
+    background: var(--color-background-secondary);
+  }
+  .area-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .area-en { font-size: 11px; color: var(--color-text-secondary); }
+  .area-desc { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; line-height: 1.4; }
+
+  /* ── Attraction cards ── */
+  .att-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: 12px; overflow: hidden; margin-bottom: 1rem;
+  }
+  .att-header {
+    padding: .65rem 1.1rem;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .att-icon { font-size: 24px; flex-shrink: 0; }
+  .att-name { font-size: 14px; font-weight: 500; color: var(--color-text-primary); }
+  .att-en { font-size: 11px; color: var(--color-text-secondary); }
+  .att-body { padding: .5rem 1.1rem .75rem; }
+  .att-desc { font-size: 12px; color: var(--color-text-secondary); line-height: 1.6; }
+  .att-tags { display: flex; gap: 5px; flex-wrap: wrap; margin-top: .4rem; }
+  .att-tag {
+    font-size: 11px; padding: 2px 8px; border-radius: 20px;
+  }
+  .tag-time { background: #E6F1FB; color: #0C447C; }
+  .tag-info { background: #FAEEDA; color: #633806; }
+  .tag-tip { background: #E1F5EE; color: #085041; }
+  .tag-warn { background: #FCEBEB; color: #501313; }
+  .tag-pass { background: #EEEDFE; color: #3C3489; }
+  .att-hr { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: .5rem 0; }
+
+  /* ── Food grid ── */
+  .food-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .food-item {
+    background: var(--color-background-secondary);
+    border-radius: 10px; padding: .55rem .8rem;
+  }
+  .food-emoji { font-size: 18px; }
+  .food-name { font-size: 12px; font-weight: 500; color: var(--color-text-primary); margin-top: 3px; }
+  .food-desc { font-size: 11px; color: var(--color-text-secondary); margin-top: 2px; line-height: 1.4; }
+
+  /* ── Drink row ── */
+  .drink-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .drink-pill {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--color-background-secondary);
+    border-radius: 10px; padding: .4rem .75rem; font-size: 12px;
+    color: var(--color-text-primary);
+  }
+
+  /* ── Info rows ── */
+  .info-row { display: flex; gap: 8px; margin-bottom: .55rem; align-items: flex-start; }
+  .info-row:last-child { margin-bottom: 0; }
+  .info-dot { font-size: 15px; flex-shrink: 0; padding-top: 1px; }
+  .info-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+  .info-note { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; line-height: 1.5; }
+
+  /* section label */
+  .slabel {
+    font-size: 11px; font-weight: 500; color: var(--color-text-tertiary);
+    text-transform: uppercase; letter-spacing: .06em; margin: .75rem 0 .35rem;
+  }
+  .divider { border: none; border-top: 0.5px solid var(--color-border-tertiary); margin: .6rem 0; }
+
+  .section-title {
+    font-size: 15px; font-weight: 500; color: var(--color-text-primary);
+  }
+  .section-icon { font-size: 20px; }
+</style>
+</head>
+<body>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('about')">關於釜山</button>
+  <button class="tab-btn" onclick="switchTab('food')">在地美食</button>
+  <button class="tab-btn" onclick="switchTab('att-east')">東區景點</button>
+  <button class="tab-btn" onclick="switchTab('att-west')">西區景點</button>
+  <button class="tab-btn" onclick="switchTab('att-seomyeon')">西面區景點</button>
+</div>
+
+<!-- ─── TAB 1：關於釜山 ─── -->
+<div id="about" class="tab-pane active">
+
+  <div class="hero">
+    <div class="hero-title">🇰🇷 釜山 Busan</div>
+    <div class="hero-sub">
+      南韓第二大都市與最大港口，以依山傍海的景觀、豐富海鮮、物價實惠的度假氛圍聞名。
+      釜山人個性直率，擁有不同於首爾的獨特海洋城市風情。
+    </div>
+    <div class="hero-chips">
+      <span class="chip">⏰ 韓國時間比台灣快 1 小時</span>
+      <span class="chip">🌡 8月均溫 25~33°C</span>
+      <span class="chip">💰 物價比台灣便宜約 2~3 成</span>
+      <span class="chip">🌊 海港城市 依山傍海</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="section-icon">🗺</span>
+      <span class="section-title">釜山六大區域</span>
+    </div>
+    <div class="card-body">
+      <div class="area-grid">
+        <div class="area-card" style="border-left: 3px solid #1D9E75;">
+          <div class="area-name">海雲台 🏖</div>
+          <div class="area-en">Haeundae</div>
+          <div class="area-desc">最知名的海水浴場，膠囊列車、X the Sky、LCT 都在此，我們 8/13~8/17 住這！</div>
+        </div>
+        <div class="area-card" style="border-left: 3px solid #378ADD;">
+          <div class="area-name">西面 🏙</div>
+          <div class="area-en">Seomyeon</div>
+          <div class="area-desc">釜山最大商圈，西面地下商街、大型連鎖餐廳、Olive Young 全都集中在這，8/17~8/20 住這！</div>
+        </div>
+        <div class="area-card" style="border-left: 3px solid #7F77DD;">
+          <div class="area-name">廣安里 🌉</div>
+          <div class="area-en">Gwangalli</div>
+          <div class="area-desc">廣安大橋夜景、海灘咖啡廳、無人機秀（限週六）、個性餐廳，比海雲台更悠閒</div>
+        </div>
+        <div class="area-card" style="border-left: 3px solid #D85A30;">
+          <div class="area-name">松島 🚡</div>
+          <div class="area-en">Songdo</div>
+          <div class="area-desc">韓國第一條海上纜車所在地，松島龍宮雲步道、松島雲步道，景色絕美</div>
+        </div>
+        <div class="area-card" style="border-left: 3px solid #BA7517;">
+          <div class="area-name">機張 🦀</div>
+          <div class="area-en">Gijang</div>
+          <div class="area-desc">斜坡滑車、海東龍宮寺、機張螃蟹市場都在此，釜山東北角</div>
+        </div>
+        <div class="area-card" style="border-left: 3px solid #888780;">
+          <div class="area-name">南浦洞 🛍</div>
+          <div class="area-en">Nampo-dong</div>
+          <div class="area-desc">傳統文化與現代購物並存，BIFF廣場、元祖糖餅、釜山塔，與西面並列兩大商圈</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="section-icon">☕</span>
+      <span class="section-title">韓國咖啡文化</span>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-dot">☕</div><div>
+        <div class="info-title">把咖啡當水喝</div>
+        <div class="info-note">韓國人一年平均喝超過 360 杯咖啡！冰美式是國民飲品，在韓國有句話叫「凍死也要喝冰美式」，街角密度極高</div>
+      </div></div>
+      <div class="info-row"><div class="info-dot">🍽</div><div>
+        <div class="info-title">飯後「續攤」文化</div>
+        <div class="info-note">韓國餐廳通常不適合久坐，吃飽後轉戰咖啡廳聊天是標準韓式社交習慣，Mega Coffee 是平價首選</div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="section-icon">🏪</span>
+      <span class="section-title">三大超商特色</span>
+    </div>
+    <div class="card-body">
+      <div class="info-row"><div class="info-dot">🟠</div><div>
+        <div class="info-title">CU（市佔率第一）</div>
+        <div class="info-note">「See You」諧音，以高品質甜點、精緻便當、聯名泡麵聞名；機場退稅後去掃貨的首選</div>
+      </div></div>
+      <div class="info-row"><div class="info-dot">🟢</div><div>
+        <div class="info-title">GS25（設計最潮）</div>
+        <div class="info-note">年輕品牌形象，熱門聯名商品多，視覺設計最好看；「25」象徵 24h+1h 精緻服務</div>
+      </div></div>
+      <div class="info-row"><div class="info-dot">🔴</div><div>
+        <div class="info-title">7-Eleven（微波食品最好吃）</div>
+        <div class="info-note">由樂天集團經營，韓國最早的便利商店，熱食被認為三者之中最美味</div>
+      </div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TAB 2：在地美食 ─── -->
+<div id="food" class="tab-pane">
+
+  <div class="slabel">釜山必吃正餐</div>
+  <div class="food-grid">
+    <div class="food-item">
+      <div class="food-emoji">🍲</div>
+      <div class="food-name">豬肉湯飯 Gukbap</div>
+      <div class="food-desc">釜山代表庶民美食，韓戰時期產物，豬骨熬煮濃湯，拌入白飯，是在地人早餐首選，24h 供應</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🥩</div>
+      <div class="food-name">韓國烤肉 KBBQ</div>
+      <div class="food-desc">源自古高句麗「貊炙」，特色是生菜包肉＋桌邊服務，配燒酒是標準吃法</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🐄</div>
+      <div class="food-name">韓牛 Hanwoo</div>
+      <div class="food-desc">細膩油花、濃郁肉香、入口即化，是韓國頂級食材，서면소갈비살 是我們行程中的首選</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🌀</div>
+      <div class="food-name">烤腸 Gopchang</div>
+      <div class="food-desc">牛小腸或豬大腸炭烤，口感富嚼勁油脂香濃，西面烤腸非常有名，常搭配燒酒</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🍜</div>
+      <div class="food-name">海鮮刀削麵 Kalguksu</div>
+      <div class="food-desc">釜山特產，蛤蜊＋淡菜＋扇貝大碗公，手切勁道麵條，31cm 海鮮刀切麵是Threads 熱門推薦</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🍜</div>
+      <div class="food-name">釜山小麥冷麵 Milmyeon</div>
+      <div class="food-desc">用小麥粉取代蕎麥，口感Q彈不易斷，搭配帶藥材香氣的清甜冰高湯，夏天消暑極品</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🐙</div>
+      <div class="food-name">辣炒章魚 Nakji Bokkeum</div>
+      <div class="food-desc">螞蟻家最知名，廣安里店吃完直接看廣安大橋夜景，超完美搭配</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🦪</div>
+      <div class="food-name">鮑魚粥 Jeonbok Juk</div>
+      <div class="food-desc">釜山盛產高品質鮑魚，深綠色濃稠風味，高營養滋補暖胃，旅遊書 Day 4 早餐首選</div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:1rem;">街頭小食</div>
+  <div class="food-grid">
+    <div class="food-item">
+      <div class="food-emoji">🥘</div>
+      <div class="food-name">釜山辣炒年糕 Tteokbokki</div>
+      <div class="food-desc">用白蘿蔔絲汁液熬煮，不加水，口感Q彈甜辣，釜田市場必吃，常搭魚板炸物</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🥞</div>
+      <div class="food-name">海鮮煎餅 Haemul Pajeon</div>
+      <div class="food-desc">蔥＋海鮮＋麵粉煎製，下雨天喝馬格利配煎餅是韓國傳統，廣安里最有氣氛</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🍩</div>
+      <div class="food-name">釜山堅果糖餅 Hotteok</div>
+      <div class="food-desc">糖餅加入各式堅果是釜山在地特色，南浦洞元祖糖餅排隊名店，熱騰騰香脆</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">⚫</div>
+      <div class="food-name">血腸 Sundae</div>
+      <div class="food-desc">豬血＋糯米＋冬粉填入腸衣，沾調味鹽或蝦醬食用，口感Q彈，市場常見</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🍗</div>
+      <div class="food-name">韓式炸雞 Fried Chicken</div>
+      <div class="food-desc">韓戰後演變而成，洋釀醬料炸雞確立甜辣風味；Puradak 黑蒜口味是我們行程主角</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🥚</div>
+      <div class="food-name">烤雞蛋（汗蒸幕限定）</div>
+      <div class="food-desc">汗蒸幕必吃儀式感，在高溫烤熱後蛋白變成淡褐色，搭配甜米露是經典組合</div>
+    </div>
+  </div>
+
+  <div class="slabel" style="margin-top:1rem;">飲料文化</div>
+  <div class="food-grid">
+    <div class="food-item">
+      <div class="food-emoji">🍶</div>
+      <div class="food-name">燒酒 Soju</div>
+      <div class="food-desc">綠瓶、透明、順口不辣喉，12~20%，炸雞烤肉的最佳搭檔，價格極親民</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🥛</div>
+      <div class="food-name">馬格麗 Makgeolli</div>
+      <div class="food-desc">最古老傳統濁米酒，乳白色甘甜微氣泡，配煎餅是韓國傳統文化，富含乳酸菌</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">🍌</div>
+      <div class="food-name">香蕉牛奶</div>
+      <div class="food-desc">1974年上市，當年香蕉是進口奢侈品，現在是韓國人從小喝到大的國民飲品</div>
+    </div>
+    <div class="food-item">
+      <div class="food-emoji">☕</div>
+      <div class="food-name">冰美式 Iced Americano</div>
+      <div class="food-desc">韓國國民飲品，「凍死也要喝冰美式」，具提神、消水腫功能，是社交必備</div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TAB 3：東區景點 ─── -->
+<div id="att-east" class="tab-pane">
+  <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:.75rem;">包含海雲台、廣安里、機張區域 — 8/13~8/17 主要活動範圍</div>
+
+  <div class="att-card">
+    <div class="att-header" style="background:#E1F5EE;">
+      <div class="att-icon">🚂</div>
+      <div>
+        <div class="att-name">海雲台藍線公園 Sky Capsule 膠囊列車</div>
+        <div class="att-en">Blueline Park · Haeundae</div>
+      </div>
+    </div>
+    <div class="att-body">
+      <div class="att-desc">行經海雲台尾浦→青沙浦兩站，從 7~10 公尺高空欣賞大海美景的浪漫彩色列車，是來釜山旅遊必拍必搭的療癒景點。旅遊書評為「Must Try」。每節車廂 4 人座，全程約 30~40 分鐘。</div>
+      <div class="att-hr"></div>
+      <div class="att-tags">
+        <span class="att-tag tag-warn">⚠ 務必 2 週前預購！8 月旺季現場票極難取得</span>
+        <span class="att-tag tag-pass">釜山 Pass 含海岸列車（非膠囊）</span>
+        <span class="att-tag tag-time">⏱ 含散步 2~3 小時</span>
+        <span class="att-tag tag-tip">📍 從彌浦站出發往清沙浦</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="att-card">
+    <div class="att-header" style="background:#E6F1FB;">
+      <div class="att-icon">🏙</div>
+      <div>
+        <div class="att-name">X the Sky 展望台</div>
+        <div class="att-en">Busan X the Sky · LCT 98~100F · Haeundae</div>
+      </div>
+    </div>
+    <div class="att-body">
+      <div class="att-desc">釜山最高觀景台，360度俯瞰整條海雲台海岸線與廣安大橋，世界最高 Starbucks 就在 99 樓，可購買 Busan 限定杯。晴天視野可延伸至日本對馬島方向。</div>
+      <div class="att-hr"></div>
+      <div class="att-tags">
+        <span class="att-tag tag-pass">釜山 Big5 Pass 可兌換</span>
+        <span class="att-tag tag-time">⏱ 1~1.5 小時</span>
+        <span class="att-tag tag-tip">💡 Klook 預購省排隊，開門 10:00</span>
+        <span class="att-tag tag-info">🌅 日落時分最美</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="att-card">
+    <div class="att-header" style="background:#FAEEDA;">
+      <div class="att-icon">🛷</div>
+      <div>
+        <div class="att-name">Skyline Luge 斜坡滑車</div>
+        <div class="att-en">Skyline Luge Busan · Osiria · 기장</div>
+      </div>
+    </div>
+    <div class="att-body">
+      <div class="att-desc">紐西蘭 Skyline 品牌，共四條賽道，先搭空中吊椅上山再駕駛無動力滑車滑下，有山側和海側景觀可選。另有高空滑索 Hyfly 可加購。90% 遊客都是台灣人，非常受台灣旅客歡迎。</div>
+      <div class="att-hr"></div>
+      <div class="att-tags">
+        <span class="att-tag tag-pass">釜山 Pass 含 2 次滑車</span>
+        <span class="att-tag tag-time">⏱ 2 次約 1~1.5 小時</span>
+        <span class="att-tag tag-tip">💡 龍宮寺→滑車下坡步行 12 分鐘</span>
+        <span class="att-tag tag-tip">💡 可租借運動攝影機免費拍攝</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="att-card">
+    <div class="att-header" style="background:#FAEEDA;">
+      <div class="att-icon">🏛</div>
+      <div>
+        <div class="att-name">海東龍宮寺</div>
+        <div class="att-en">Haedong Yonggungsa Temple · 기장</div>
+      </div>
+    </div>
+    <div class="att-body">
+      <div class="att-desc">韓國唯一一座建於海邊礁岩上的寺廟，以依山傍海的絕美景緻被譽為「韓國最美寺廟」，是韓國三大觀音聖地之一。入口有熱鬧小吃街（熱狗、魚餅、橘子汁、糖葫蘆），逛完寺廟步行下坡 12 分鐘可達斜坡滑車。</div>
+      <div class="att-hr"></div>
+      <div class="att-tags">
+        <span class="att-tag tag-time">⏱ 1~1.5 小時</span>
+        <span class="att-tag tag-tip">💡 09:30 前到人少</span>
+        <span class="att-tag tag-warn">⚠ 有上坡路段，長輩建議叫車直達</span>
+        <span class="att-tag tag-info">🕓 04:30~20:00 全年開放</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="att-card">
+    <div class="att-header" style="background:#FCEBEB;">
+      <div class="att-icon">🚁</div>
+      <div>
+        <div class="att-name">廣安里無人機秀</div>
+        <div class="att-en">Gwangalli Drone Show · 광안리</div>
+      </div>
+    </div>
+    <div class="att-body">
+      <div class="att-desc">廣安里海灘上的大型無人機燈光秀，約 300 台無人機在廣安大橋上空變幻圖案，配合音樂演出，約 15 分鐘，壯觀浪漫。站在 Starbucks 廣安里店正前方沙灘中央視角最佳。</div>
+      <div class="att-hr"></div>
+      <div class="att-tags">
+        <span class="att-tag tag-warn">🔴 限每週六 20:00 & 22:00</span>
+        <span class="att-tag tag-tip">💡 提前 20 分鐘佔位，帶飲料等待</span>
+        <span class="att-tag tag-time">⏱ 含等待約 1 小時</span>
+        <span class="att-tag tag-info">我們在 8/16（週六）安排</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── TAB 4：西區景點 ─── -->
+<div id="att-west" class="tab-pane">
+  <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:.75rem;">包含松島、南浦洞區域 — 8/16 主要活動範圍</div>
+
+  <div class="att-card">
+    <div class="att-header" style="background:#E1F5EE;">
+      <div class="att-icon">🚡</div>
+      <div>
+        <div class="att-name">松島海上纜車</div>
+        <div class="att-en">Songdo Sea Cable Car · Busan Air Cruise · 송도</div>
+      </div>
+    </div>
+    <div class="att-body">
+      <div class="att-desc">韓國第一條海上纜車，旅遊書特別強調這個「第一」的地位。全長 1.62 公里，橫跨松島灣，可在 86 公尺高空俯瞰松島海水浴場、海洋與市區美景，單程約 15~20 分鐘。水晶車廂地板透明，腳下直接是海，視覺衝擊感超強。</div>
+      <div class="att-hr"></div>
+      <div class="att-tags">
+        <span class="att-tag tag-pass">釜山 Big5 Pass 含水晶車廂來回</span>
+        <span class="att-tag tag-time">⏱ 含松島雲步道 2 小時</span>
+        <span class="att-tag tag-tip">💡 不需預約，現場換票即可</span>
+        <span class="att-tag tag-info">🕓 09:00~21:00（8月延長至 21:30）</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="att-card">
+    <div class="att-header" style="background:#EAF3DE;">
+      <div class="att-icon">☁️</div>
+      <div>
+        <div class="att-name">松島龍宮雲步道 ＋ 松島雲步道</div>
+        <div class="att-en">Songdo Yonggung Gureum Bridge · Songdo Cloud Trail</div>
+      </div>
+    </div>
+    <div class="att-body">
+      <div class="att-desc">松島雲步道是沿著懸崖建造的海景步道，免費入場，可以近距離看纜車從頭頂飛過，視野遼闊，日落時超美。龍宮雲步道是連接岩南公園與小島的鐵網吊橋，走在上面可感受腳下海浪的波濤，晴天可遠眺日本對馬島。</div>
+      <div class="att-hr"></div>
+      <div class="att-tags">
+        <span class="att-tag tag-tip">松島雲步道免費</span>
+        <span class="att-tag tag-pass">龍宮雲步道 ₩1,000，釜山 Pass 免費</span>
+        <span class="att-tag tag-time">⏱ 兩個合計 30~45 分鐘</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="att-card">
+    <div class="att-header" style="background:#E6F1FB;">
+      <div class="att-icon">🏬</div>
+      <div>
+        <div class="att-name">新世界百貨 Centum City</div>
+        <div class="att-en">Shinsegae Centum City · 센텀시티</div>
+      </div>
+    </div>
+    <div class="att-body">
+      <div class="att-desc">世界最大百貨公司（金氏世界紀錄），6 樓有藝廊，B2 是超大超市，精品、美妝、餐廳、溜冰場一棟全有，還有退稅服務。8/18 醫美完成後，從 Centum City 站有地下連通道可直接進入，完全不用曬太陽，是術後購物最完美動線。</div>
+      <div class="att-hr"></div>
+      <div class="att-tags">
+        <span class="att-tag tag-time">⏱ 2~3 小時</span>
+        <span class="att-tag tag-tip">💡 8/18 醫美後直接走地下連通道進入</span>
+        <span class="att-tag tag-info">退稅服務完善</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── TAB 5：西面區景點 ─── -->
+<div id="att-seomyeon" class="tab-pane">
+  <div style="font-size:12px;color:var(--color-text-secondary);margin-bottom:.75rem;">8/17~8/20 住宿區域，醫美後室內活動為主</div>
+
+  <div class="att-card">
+    <div class="att-header" style="background:#FAEEDA;">
+      <div class="att-icon">🛍</div>
+      <div>
+        <div class="att-name">西面地下商街 Seomyeon Mall</div>
+        <div class="att-en">서면 지하상가 · Seomyeon Station</div>
+      </div>
+    </div>
+    <div class="att-body">
+      <div class="att-desc">釜山最大的地下購物街，完全室內有冷氣，服飾、飾品、美妝、小物應有盡有。逛街兼防曬，術後最適合的購物場所。連接西面站多個出口，10:00~22:00 營業。</div>
+      <div class="att-hr"></div>
+      <div class="att-tags">
+        <span class="att-tag tag-time">⏱ 1~2 小時</span>
+        <span class="att-tag tag-tip">💡 全室內免曬太陽，術後首選</span>
+        <span class="att-tag tag-info">🕓 10:00~22:00</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="att-card">
+    <div class="att-header" style="background:#EEEDFE;">
+      <div class="att-icon">☕</div>
+      <div>
+        <div class="att-name">全浦咖啡街</div>
+        <div class="att-en">Jeonpo Cafe Street · 전포카페거리</div>
+      </div>
+    </div>
+    <div class="att-body">
+      <div class="att-desc">西面旁邊的特色獨立咖啡廳聚集地，個性咖啡店一間接一間，各有主題風格，和 Youssoful 香水店都在這一帶。適合術後悠閒下午茶，吹冷氣讓皮膚好好休息。</div>
+      <div class="att-hr"></div>
+      <div class="att-tags">
+        <span class="att-tag tag-time">⏱ 1~1.5 小時</span>
+        <span class="att-tag tag-tip">💡 Youssoful 香水店就在附近，一起順遊</span>
+        <span class="att-tag tag-tip">La Feuille 爆漿可頌在此附近</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="att-card">
+    <div class="att-header" style="background:#E1F5EE;">
+      <div class="att-icon">🛒</div>
+      <div>
+        <div class="att-name">釜田市場 Bujeon Market</div>
+        <div class="att-en">부전시장 · 8/17 早上前往</div>
+      </div>
+    </div>
+    <div class="att-body">
+      <div class="att-desc">釜山最大在地傳統市場，早晨最有活力。肉餅（고기전）有排隊隊伍，跟著走就對了；現炒辣炒年糕（즉석떡볶이）、蒸籠包、新鮮蔬果各式乾貨一應俱全。旅遊書說「明蘭紫菜飯捲」08:00~16:00，週一公休（我們8/18週二去剛好開！）。</div>
+      <div class="att-hr"></div>
+      <div class="att-tags">
+        <span class="att-tag tag-time">⏱ 1.5~2 小時</span>
+        <span class="att-tag tag-tip">💡 早上 09:00 前去，最鮮最少人</span>
+        <span class="att-tag tag-info">🕓 04:00~19:00（各攤不同）</span>
+        <span class="att-tag tag-warn">明蘭紫菜飯捲週一公休</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="att-card">
+    <div class="att-header" style="background:#FAEEDA;">
+      <div class="att-icon">🌸</div>
+      <div>
+        <div class="att-name">Youssoful 香水店</div>
+        <div class="att-en">유쓰풀 · 전포점 · Jeonpo</div>
+      </div>
+    </div>
+    <div class="att-body">
+      <div class="att-desc">韓國獨特高質感香水品牌，店員親切熱情，提供試香服務。San Moritz、Yeosu Night Sea 等獨特香調最受好評。在台灣買不到，是必逛的釜山限定體驗。和全浦咖啡街在同一區域，下午茶可一起安排。</div>
+      <div class="att-hr"></div>
+      <div class="att-tags">
+        <span class="att-tag tag-time">⏱ 45~60 分鐘</span>
+        <span class="att-tag tag-info">🕓 11:00~21:00</span>
+        <span class="att-tag tag-tip">💡 安排在 8/15 或 8/19 下午</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function switchTab(id) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>
